@@ -19,6 +19,9 @@ SMALL_FONT = ("Verdana", 10)
 source_1 = ''
 source_2 = ''
 final_dest = ''
+source_1_file_count = ''
+source_2_file_count = ''
+final_dest_file_count = ''
 dupe_solution = 1
 
 # Generic Syst Functions
@@ -34,12 +37,23 @@ def popupmsg(message):
 
 # File Operations Functions
 
+# Count Files
+
+def count_files(path):
+	file_count = 0
+	for dirName, subDirs, fileList in os.walk(path):
+		for files in fileList:
+			file_count += 1
+	return file_count
+
 # Select Directories
 def modir_select_file(choice):
 	if choice == 1:
 		global source_1
 		source_1 = fd.askdirectory(title="Choose a directory")
 		modir_source1_file_label.config(text=source_1)
+		source_1_file_count = count_files(source_1)
+		modir_source1_file_count.config(text=source_1_file_count)
 	elif choice == 3:
 		global final_dest
 		final_dest = fd.askdirectory(title="Choose a directory")
@@ -52,10 +66,14 @@ def medir_select_file(choice):
 		global source_1
 		source_1 = fd.askdirectory(title="Choose a directory")
 		medir_source1_file_label.config(text=source_1)
+		source_1_file_count = count_files(source_1)
+		medir_source1_file_count.config(text=source_1_file_count)
 	elif choice == 2:
 		global source_2
 		source_2 = fd.askdirectory(title="Choose a directory")
 		medir_source2_file_label.config(text=source_2)
+		source_2_file_count = count_files(source_2)
+		medir_source2_file_count.config(text=source_2_file_count)
 	elif choice == 3:
 		global final_dest
 		final_dest = fd.askdirectory(title="Choose a directory")
@@ -68,6 +86,8 @@ def codir_select_file(choice):
 		global source_1
 		source_1 = fd.askdirectory(title="Choose a directory")
 		codir_source1_file_label.config(text=source_1)
+		source_1_file_count = count_files(source_1)
+		codir_source1_file_count.config(text=source_1_file_count)
 	elif choice == 3:
 		global final_dest
 		final_dest = fd.askdirectory(title="Choose a directory")
@@ -301,7 +321,7 @@ class MoveDirectory(tk.Frame):
 		content_frame.pack(side='top', fill='both', expand= True)
 		content_frame.grid_rowconfigure(0, weight=1)
 		content_frame.grid_columnconfigure(0, weight=1)
-		content_frame.grid_rowconfigure(11, weight=1)
+		content_frame.grid_rowconfigure(100, weight=1)
 		content_frame.grid_columnconfigure(6, weight=1)
 		
 		title_label = ttk.Label(content_frame, text="Welcome to OmniFiler", font=LARGE_FONT)
@@ -329,30 +349,37 @@ class MoveDirectory(tk.Frame):
 		modir_source1_file_label = ttk.Label(content_frame, text=source_1, font=NORM_FONT)
 		modir_source1_file_label.grid(column=3, row=6, columnspan=2, pady=10, padx=10, sticky='w')
 		
+		source_1_count_label = ttk.Label(content_frame, text="Files to be moved:", font=NORM_FONT)
+		source_1_count_label.grid(column=1, row=7, columnspan=2, pady=10, padx=10, sticky='w')
+		
+		global modir_source1_file_count
+		modir_source1_file_count = ttk.Label(content_frame, text=source_1, font=NORM_FONT)
+		modir_source1_file_count.grid(column=3, row=7, columnspan=2, pady=10, padx=10, sticky='w')
+		
 		choose_dest_directory_label = ttk.Label(content_frame, text="Choose a Destination Directory", font=NORM_FONT)
-		choose_dest_directory_label.grid(column=1, row=7, columnspan=3, pady=10, padx=10, sticky='w')
+		choose_dest_directory_label.grid(column=1, row=8, columnspan=3, pady=10, padx=10, sticky='w')
 		
 		choose_dest_directory_button = ttk.Button(content_frame, text="Browse", command=lambda: modir_select_file(3))
-		choose_dest_directory_button.grid(column=4, row=7, padx=10, pady=10)
+		choose_dest_directory_button.grid(column=4, row=8, padx=10, pady=10)
 		
 		chosen_dest_directory_label = ttk.Label(content_frame, text="Destination directory:", font=NORM_FONT)
-		chosen_dest_directory_label.grid(column=1, row=8, columnspan=2, pady=10, padx=10, sticky='w')
+		chosen_dest_directory_label.grid(column=1, row=9, columnspan=2, pady=10, padx=10, sticky='w')
 		
 		global modir_dest_file_label
 		modir_dest_file_label = ttk.Label(content_frame, text=final_dest, font=NORM_FONT)
-		modir_dest_file_label.grid(column=3, row=8, columnspan=2, pady=10, padx=10, sticky='w')
+		modir_dest_file_label.grid(column=3, row=9, columnspan=2, pady=10, padx=10, sticky='w')
 		
 		modir_confirm_button = ttk.Button(content_frame, text="Move Directory", command=lambda: move_directory_confirm())
-		modir_confirm_button.grid(column=3, row=9, pady=20, padx=10)
+		modir_confirm_button.grid(column=3, row=10, pady=20, padx=10)
 		
 		settings_button = ttk.Button(content_frame, text="Settings", command=lambda: controller.show_frame(Settings))
-		settings_button.grid(column=1, columnspan=2, row=10, padx=5, pady=20)
+		settings_button.grid(column=1, columnspan=2, row=11, padx=5, pady=20)
 		
 		home_button = ttk.Button(content_frame, text="Return to Home", command=lambda: controller.show_frame(StartPage))
-		home_button.grid(column=3, row=10, padx=5, pady=20)
+		home_button.grid(column=3, row=11, padx=5, pady=20)
 		
 		quit_button = ttk.Button(content_frame, text="Quit", command=quit)
-		quit_button.grid(column=4, columnspan=2, row=10, padx=5, pady=20)
+		quit_button.grid(column=4, columnspan=2, row=11, padx=5, pady=20)
 
 class MergeDirectory(tk.Frame):
 	
@@ -364,7 +391,7 @@ class MergeDirectory(tk.Frame):
 		content_frame.pack(side='top', fill='both', expand= True)
 		content_frame.grid_rowconfigure(0, weight=1)
 		content_frame.grid_columnconfigure(0, weight=1)
-		content_frame.grid_rowconfigure(13, weight=1)
+		content_frame.grid_rowconfigure(100, weight=1)
 		content_frame.grid_columnconfigure(6, weight=1)
 		
 		title_label = ttk.Label(content_frame, text="Welcome to OmniFiler", font=LARGE_FONT)
@@ -392,43 +419,57 @@ class MergeDirectory(tk.Frame):
 		medir_source1_file_label = ttk.Label(content_frame, text=source_1, font=NORM_FONT)
 		medir_source1_file_label.grid(column=3, row=6, columnspan=2, pady=10, padx=10, sticky='w')
 		
+		source_1_count_label = ttk.Label(content_frame, text="Files to be moved:", font=NORM_FONT)
+		source_1_count_label.grid(column=1, row=7, columnspan=2, pady=10, padx=10, sticky='w')
+		
+		global medir_source1_file_count
+		medir_source1_file_count = ttk.Label(content_frame, text=source_1, font=NORM_FONT)
+		medir_source1_file_count.grid(column=3, row=7, columnspan=2, pady=10, padx=10, sticky='w')
+		
 		choose_source2_directory_label = ttk.Label(content_frame, text="Choose the Second Source Directory", font=NORM_FONT)
-		choose_source2_directory_label.grid(column=1, row=7, columnspan=3, pady=10, padx=10, sticky='w')
+		choose_source2_directory_label.grid(column=1, row=8, columnspan=3, pady=10, padx=10, sticky='w')
 		
 		choose_source2_directory_button = ttk.Button(content_frame, text="Browse", command=lambda: medir_select_file(2))
-		choose_source2_directory_button.grid(column=4, row=7, padx=10, pady=10)
+		choose_source2_directory_button.grid(column=4, row=8, padx=10, pady=10)
 		
 		chosen_source2_directory_label = ttk.Label(content_frame, text="Second Source directory:", font=NORM_FONT)
-		chosen_source2_directory_label.grid(column=1, row=8, columnspan=2, pady=10, padx=10, sticky='w')
+		chosen_source2_directory_label.grid(column=1, row=9, columnspan=2, pady=10, padx=10, sticky='w')
 		
 		global medir_source2_file_label
 		medir_source2_file_label = ttk.Label(content_frame, text=source_2, font=NORM_FONT)
-		medir_source2_file_label.grid(column=3, row=8, columnspan=2, pady=10, padx=10, sticky='w')
+		medir_source2_file_label.grid(column=3, row=9, columnspan=2, pady=10, padx=10, sticky='w')
+		
+		source_2_count_label = ttk.Label(content_frame, text="Files to be moved:", font=NORM_FONT)
+		source_2_count_label.grid(column=1, row=10, columnspan=2, pady=10, padx=10, sticky='w')
+		
+		global medir_source2_file_count
+		medir_source2_file_count = ttk.Label(content_frame, text=source_1, font=NORM_FONT)
+		medir_source2_file_count.grid(column=3, row=10, columnspan=2, pady=10, padx=10, sticky='w')
 		
 		choose_dest_directory_label = ttk.Label(content_frame, text="Choose a Destination Directory", font=NORM_FONT)
-		choose_dest_directory_label.grid(column=1, row=9, columnspan=3, pady=10, padx=10, sticky='w')
+		choose_dest_directory_label.grid(column=1, row=11, columnspan=3, pady=10, padx=10, sticky='w')
 		
 		choose_dest_directory_button = ttk.Button(content_frame, text="Browse", command=lambda: medir_select_file(3))
-		choose_dest_directory_button.grid(column=4, row=9, padx=10, pady=10)
+		choose_dest_directory_button.grid(column=4, row=11, padx=10, pady=10)
 		
 		chosen_dest_directory_label = ttk.Label(content_frame, text="Destination directory:", font=NORM_FONT)
-		chosen_dest_directory_label.grid(column=1, row=10, columnspan=2, pady=10, padx=10, sticky='w')
+		chosen_dest_directory_label.grid(column=1, row=12, columnspan=2, pady=10, padx=10, sticky='w')
 		
 		global medir_dest_file_label
 		medir_dest_file_label = ttk.Label(content_frame, text=final_dest, font=NORM_FONT)
-		medir_dest_file_label.grid(column=3, row=10, columnspan=2, pady=10, padx=10, sticky='w')
+		medir_dest_file_label.grid(column=3, row=12, columnspan=2, pady=10, padx=10, sticky='w')
 		
 		modir_confirm_button = ttk.Button(content_frame, text="Merge Directories", command=lambda: merge_directories_confirm())
-		modir_confirm_button.grid(column=3, row=11, pady=20, padx=10)
+		modir_confirm_button.grid(column=3, row=13, pady=20, padx=10)
 		
 		settings_button = ttk.Button(content_frame, text="Settings", command=lambda: controller.show_frame(Settings))
-		settings_button.grid(column=1, columnspan=2, row=12, padx=5, pady=20)
+		settings_button.grid(column=1, columnspan=2, row=14, padx=5, pady=20)
 		
 		home_button = ttk.Button(content_frame, text="Return to Home", command=lambda: controller.show_frame(StartPage))
-		home_button.grid(column=3, row=12, padx=5, pady=20)
+		home_button.grid(column=3, row=14, padx=5, pady=20)
 		
 		quit_button = ttk.Button(content_frame, text="Quit", command=quit)
-		quit_button.grid(column=4, columnspan=2, row=12, padx=5, pady=20)
+		quit_button.grid(column=4, columnspan=2, row=14, padx=5, pady=20)
 
 class CopyDirectory(tk.Frame):
 	
@@ -440,7 +481,7 @@ class CopyDirectory(tk.Frame):
 		content_frame.pack(side='top', fill='both', expand= True)
 		content_frame.grid_rowconfigure(0, weight=1)
 		content_frame.grid_columnconfigure(0, weight=1)
-		content_frame.grid_rowconfigure(11, weight=1)
+		content_frame.grid_rowconfigure(100, weight=1)
 		content_frame.grid_columnconfigure(6, weight=1)
 		
 		title_label = ttk.Label(content_frame, text="Welcome to OmniFiler", font=LARGE_FONT)
@@ -468,30 +509,37 @@ class CopyDirectory(tk.Frame):
 		codir_source1_file_label = ttk.Label(content_frame, text=source_1, font=NORM_FONT)
 		codir_source1_file_label.grid(column=3, row=6, columnspan=2, pady=10, padx=10, sticky='w')
 		
+		source_1_count_label = ttk.Label(content_frame, text="Files to be copied:", font=NORM_FONT)
+		source_1_count_label.grid(column=1, row=7, columnspan=2, pady=10, padx=10, sticky='w')
+		
+		global codir_source1_file_count
+		codir_source1_file_count = ttk.Label(content_frame, text=source_1, font=NORM_FONT)
+		codir_source1_file_count.grid(column=3, row=7, columnspan=2, pady=10, padx=10, sticky='w')
+		
 		choose_dest_directory_label = ttk.Label(content_frame, text="Choose a Destination Directory", font=NORM_FONT)
-		choose_dest_directory_label.grid(column=1, row=7, columnspan=3, pady=10, padx=10, sticky='w')
+		choose_dest_directory_label.grid(column=1, row=8, columnspan=3, pady=10, padx=10, sticky='w')
 		
 		choose_dest_directory_button = ttk.Button(content_frame, text="Browse", command=lambda: codir_select_file(3))
-		choose_dest_directory_button.grid(column=4, row=7, padx=10, pady=10)
+		choose_dest_directory_button.grid(column=4, row=8, padx=10, pady=10)
 		
 		chosen_dest_directory_label = ttk.Label(content_frame, text="Destination directory:", font=NORM_FONT)
-		chosen_dest_directory_label.grid(column=1, row=8, columnspan=2, pady=10, padx=10, sticky='w')
+		chosen_dest_directory_label.grid(column=1, row=9, columnspan=2, pady=10, padx=10, sticky='w')
 		
 		global codir_dest_file_label
 		codir_dest_file_label = ttk.Label(content_frame, text=final_dest, font=NORM_FONT)
-		codir_dest_file_label.grid(column=3, row=8, columnspan=2, pady=10, padx=10, sticky='w')
+		codir_dest_file_label.grid(column=3, row=9, columnspan=2, pady=10, padx=10, sticky='w')
 		
 		codir_confirm_button = ttk.Button(content_frame, text="Copy Directory", command=lambda: copy_directory_confirm())
-		codir_confirm_button.grid(column=3, row=9, pady=20, padx=10)
+		codir_confirm_button.grid(column=3, row=10, pady=20, padx=10)
 		
 		settings_button = ttk.Button(content_frame, text="Settings", command=lambda: controller.show_frame(Settings))
-		settings_button.grid(column=1, columnspan=2, row=10, padx=5, pady=20)
+		settings_button.grid(column=1, columnspan=2, row=11, padx=5, pady=20)
 		
 		home_button = ttk.Button(content_frame, text="Return to Home", command=lambda: controller.show_frame(StartPage))
-		home_button.grid(column=3, row=10, padx=5, pady=20)
+		home_button.grid(column=3, row=11, padx=5, pady=20)
 		
 		quit_button = ttk.Button(content_frame, text="Quit", command=quit)
-		quit_button.grid(column=4, columnspan=2, row=10, padx=5, pady=20)
+		quit_button.grid(column=4, columnspan=2, row=11, padx=5, pady=20)
 
 class Settings(tk.Frame):
 	
@@ -503,7 +551,7 @@ class Settings(tk.Frame):
 		content_frame.pack(side='top', fill='both', expand= True)
 		content_frame.grid_rowconfigure(0, weight=1)
 		content_frame.grid_columnconfigure(0, weight=1)
-		content_frame.grid_rowconfigure(11, weight=1)
+		content_frame.grid_rowconfigure(100, weight=1)
 		content_frame.grid_columnconfigure(6, weight=1)
 		
 		title_label = ttk.Label(content_frame, text="Welcome to OmniFiler", font=LARGE_FONT)
